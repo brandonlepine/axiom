@@ -1,4 +1,10 @@
-"""Cohort construction: freeze balanced, stable cohorts from candidate pools."""
+"""Cohort construction: freeze balanced cohorts; select model-specific high-bias cohorts."""
 from axiom.cohorts.builder import GENDER_IDENTITY_TOKENS, SegmentedCohortBuilder, gender_subaxis
+from axiom.cohorts.selector import BiasCohortSelector
 
-__all__ = ["GENDER_IDENTITY_TOKENS", "SegmentedCohortBuilder", "gender_subaxis"]
+__all__ = [
+    "BiasCohortSelector",
+    "GENDER_IDENTITY_TOKENS",
+    "SegmentedCohortBuilder",
+    "gender_subaxis",
+]

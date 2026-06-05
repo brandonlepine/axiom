@@ -59,6 +59,19 @@ class CohortConfig(_Strict):
     sort_by: list[str] = Field(default_factory=lambda: ["bias_score", "row_id"])
 
 
+class SelectionConfig(_Strict):
+    """High-bias analysis-cohort selection parameters.
+
+    ``tau`` is the magnitude floor on ``wq_score_diff`` (sum of log-probs over the shared
+    span); a pair is kept iff the model prefers the stereotype (``wq_stereo == 1``) by at
+    least ``tau``. ``cap`` re-balances by capping each cell after filtering.
+    """
+
+    tau: float = Field(0.5, description="Min wq_score_diff to keep (model prefers stereotype by >= tau).")
+    cap: int = Field(100, ge=1, description="Max pairs per (cell) after filtering, highest wq_score_diff kept.")
+    max_pool_pairs: int | None = Field(None, ge=1, description="Smoke-test cap on scored pool rows.")
+
+
 class PatchingConfig(_Strict):
     """Activation-patching step parameters (residual / head patching)."""
 
@@ -82,6 +95,7 @@ class RunConfig(_Strict):
     run_id: str | None = None
     scoring: ScoringConfig | None = None
     cohort: CohortConfig | None = None
+    selection: SelectionConfig | None = None
     patching: PatchingConfig | None = None
 
     @field_validator("dataset")

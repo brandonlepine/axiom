@@ -9,6 +9,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
+import pandas as pd
+
 from axiom.data.adapters import CohortFileAdapter
 from axiom.data.schemas import COMBINED_SCHEMA, WINOQUEER_SCHEMA, CohortSchema
 from axiom.paths import REPO_ROOT, DataLayout
@@ -16,23 +18,44 @@ from axiom.paths import REPO_ROOT, DataLayout
 
 @dataclass(frozen=True)
 class DatasetSpec:
-    """How a dataset enters the pipeline: cohort location, manifest, and schema."""
+    """How a dataset enters the pipeline: cohort + candidate-pool location, schema, and
+    the rules for building a model-specific high-bias analysis cohort from the pool.
+
+    ``pool_relpath`` is the full candidate universe the selector scores + filters;
+    ``pool_source_filter`` restricts a shared pool to one source (the per-source cohorts
+    share the combined pool); ``cell_columns`` is the balancing cell for re-balancing;
+    ``winoqueer_annotate`` marks pools that need the identity-taxonomy annotation.
+    """
 
     dataset_id: str
     cohort_relpath: str
     manifest_dataset: str
     schema: CohortSchema
+    pool_relpath: str
+    cell_columns: tuple[str, ...]
+    pool_source_filter: str | None = None
+    winoqueer_annotate: bool = False
 
+
+_WQ_POOL = "data/processed/winoqueer/results/patching_candidates/winoqueer_patching_candidates_all.csv"
+_COMBINED_POOL = "data/processed/combined/bbq_crows_candidates.csv"
 
 DATASETS: dict[str, DatasetSpec] = {
     "winoqueer": DatasetSpec(
-        "winoqueer", "data/cohorts/winoqueer/cohort.csv", "winoqueer", WINOQUEER_SCHEMA),
+        "winoqueer", "data/cohorts/winoqueer/cohort.csv", "winoqueer", WINOQUEER_SCHEMA,
+        pool_relpath=_WQ_POOL, cell_columns=("identity", "predicate_label_provisional"),
+        winoqueer_annotate=True),
     "combined_bbq_crows": DatasetSpec(
-        "combined_bbq_crows", "data/cohorts/combined_bbq_crows/cohort.csv", "combined_bbq_crows", COMBINED_SCHEMA),
+        "combined_bbq_crows", "data/cohorts/combined_bbq_crows/cohort.csv", "combined_bbq_crows", COMBINED_SCHEMA,
+        pool_relpath=_COMBINED_POOL, cell_columns=("block", "predicate_label_provisional")),
     "bbq": DatasetSpec(
-        "bbq", "data/cohorts/residual_bbq_crows/bbq/cohort.csv", "combined_bbq_crows", COMBINED_SCHEMA),
+        "bbq", "data/cohorts/residual_bbq_crows/bbq/cohort.csv", "combined_bbq_crows", COMBINED_SCHEMA,
+        pool_relpath=_COMBINED_POOL, cell_columns=("block", "predicate_label_provisional"),
+        pool_source_filter="bbq"),
     "crows": DatasetSpec(
-        "crows", "data/cohorts/residual_bbq_crows/crows/cohort.csv", "combined_bbq_crows", COMBINED_SCHEMA),
+        "crows", "data/cohorts/residual_bbq_crows/crows/cohort.csv", "combined_bbq_crows", COMBINED_SCHEMA,
+        pool_relpath=_COMBINED_POOL, cell_columns=("block", "predicate_label_provisional"),
+        pool_source_filter="crows-pairs"),
 }
 
 # All four frozen pod cohorts, in run order.
@@ -50,6 +73,28 @@ def manifest_path(dataset: str, root: Path = REPO_ROOT) -> Path:
     """Resolve a dataset's provenance manifest (per-source cohorts share the combined one)."""
     manifest_ds = DATASETS[dataset].manifest_dataset if dataset in DATASETS else dataset
     return DataLayout(root).manifest(manifest_ds)
+
+
+def pool_path(dataset: str, root: Path = REPO_ROOT) -> Path:
+    """Resolve a dataset's candidate-pool CSV (the universe the selector scores+filters)."""
+    return root / DATASETS[dataset].pool_relpath
+
+
+def load_pool(dataset: str, root: Path = REPO_ROOT) -> "pd.DataFrame":
+    """Load a dataset's candidate pool, applying its source filter + WinoQueer annotation.
+
+    Per-source datasets (bbq/crows) share the combined pool and are filtered by ``source``;
+    WinoQueer pools are annotated with axis/identity/is_umbrella so the frozen analysis
+    cohort satisfies the schema.
+    """
+    spec = DATASETS[dataset]
+    df = pd.read_csv(pool_path(dataset, root))
+    if spec.pool_source_filter is not None:
+        df = df[df["source"] == spec.pool_source_filter].copy()
+    if spec.winoqueer_annotate:
+        from axiom.data.winoqueer_taxonomy import annotate
+        df = annotate(df, strict=True)
+    return df.reset_index(drop=True)
 
 
 def make_adapter(dataset: str, root: Path = REPO_ROOT, cohort_override: Path | None = None) -> CohortFileAdapter:

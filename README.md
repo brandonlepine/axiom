@@ -65,13 +65,22 @@ Four frozen cohorts are what the pod analysis reads, tracked under `data/cohorts
 Local development and smoke tests use **GPT-2** (MPS/CPU); pod runs use **Llama-3.1-8B**
 (CUDA). Device is resolved automatically and recorded in provenance.
 
+Pipeline order: **score → select high-bias analysis cohort → mechanistic analysis.**
+The mechanistic steps run only on instances where the target model actually exhibits the
+bias (selected per model; see ADR 0003).
+
 ```bash
 pip install -r requirements.txt
 python -m pytest                                   # foundations (no model needed)
 
-# Smoke-test scoring locally on GPT-2 (5 pairs):
-python scripts/run_scoring.py --config configs/scoring/winoqueer_llama31_8b.yaml \
-    --model gpt2 --max-pairs 5
+# 1. Score + select a model-specific high-bias analysis cohort (all datasets, one model load):
+python scripts/run_select_cohort.py --config configs/scoring/winoqueer_llama31_8b.yaml --all
+
+# 2. Run a mechanistic step on the selected cohort:
+python scripts/run_residual_patching.py --config configs/scoring/winoqueer_llama31_8b.yaml \
+    --dataset winoqueer --cohort outputs/<model>/winoqueer/selection/<run_id>/winoqueer_<model>_analysis_cohort.csv
+
+# Local GPT-2 smoke (small slices): add --model gpt2 --max-pool-pairs 200 / --max-pairs 5
 ```
 
 Every runner supports a small smoke-test mode and writes valid artifacts with sidecars.

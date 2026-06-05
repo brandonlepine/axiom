@@ -80,6 +80,7 @@ class SegmentedCohortBuilder:
     run_columns: Sequence[str] = _RUN_COLS
     seg_columns: Sequence[str] = _SEG_COLS
     cell_for_coverage: str = "predicate_label_provisional"
+    keep_all_columns: bool = False  # if True, the frozen cohort keeps every input column
 
     def _validate_pool(self, df: pd.DataFrame) -> None:
         if "row_id" not in df.columns:
@@ -102,6 +103,8 @@ class SegmentedCohortBuilder:
         kept = df.groupby(list(self.cell_columns), sort=False, group_keys=False).head(self.cap)
         kept = kept.sort_values(by, ascending=False, kind="mergesort").reset_index(drop=True)
         kept.insert(0, "cohort_pair_id", range(len(kept)))
+        if self.keep_all_columns:
+            return kept.copy()
         cols = ["cohort_pair_id"] + [c for c in (*self.run_columns, *self.seg_columns) if c in kept.columns]
         return kept[cols].copy()
 
