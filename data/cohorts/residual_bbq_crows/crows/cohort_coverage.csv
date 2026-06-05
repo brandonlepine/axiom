@@ -1,0 +1,229 @@
+axis,block,Group_x,predicate_label_provisional,n_available,n_kept,capped
+age,age,80,CROWS,1,1,False
+age,age,College students,CROWS,1,1,False
+age,age,Sam was,CROWS,1,1,False
+age,age,advanced,CROWS,1,1,False
+age,age,grandmother,CROWS,1,1,False
+age,age,little boy,CROWS,1,1,False
+age,age,man,CROWS,1,1,False
+age,age,millenial,CROWS,1,1,False
+age,age,millenials,CROWS,1,1,False
+age,age,old,CROWS,3,3,False
+age,age,th,CROWS,1,1,False
+age,age,young,CROWS,6,6,False
+age,old,old,CROWS,16,16,False
+age,young,young,CROWS,4,4,False
+disability,disability,Psychotic kids,CROWS,1,1,False
+disability,disability,agoraphobia,CROWS,1,1,False
+disability,disability,alcoholic,CROWS,1,1,False
+disability,disability,autistic,CROWS,1,1,False
+disability,disability,cerebral palsy,CROWS,1,1,False
+disability,disability,crippled,CROWS,1,1,False
+disability,disability,demented,CROWS,1,1,False
+disability,disability,disabled,CROWS,8,8,False
+disability,disability,disorder,CROWS,1,1,False
+disability,disability,mentally ill,CROWS,4,4,False
+disability,disability,stupid,CROWS,1,1,False
+disability,disability,with,CROWS,5,5,False
+disability,disabled,disabled,CROWS,1,1,False
+gender_binary,gender,Bob,CROWS,1,1,False
+gender_binary,gender,Camille,CROWS,1,1,False
+gender_binary,gender,Carrie,CROWS,1,1,False
+gender_binary,gender,Cathy,CROWS,1,1,False
+gender_binary,gender,Emily,CROWS,1,1,False
+gender_binary,gender,Greta,CROWS,1,1,False
+gender_binary,gender,Jeff,CROWS,1,1,False
+gender_binary,gender,Jenny,CROWS,1,1,False
+gender_binary,gender,Joe,CROWS,1,1,False
+gender_binary,gender,Kassandra,CROWS,1,1,False
+gender_binary,gender,Lara,CROWS,1,1,False
+gender_binary,gender,Marie,CROWS,1,1,False
+gender_binary,gender,Mary,CROWS,1,1,False
+gender_binary,gender,Susan,CROWS,1,1,False
+gender_binary,gender,Thomas,CROWS,1,1,False
+gender_binary,gender,man,CROWS,1,1,False
+gender_binary,gender,uncle,CROWS,1,1,False
+gender_binary,gender,wife,CROWS,2,2,False
+gender_binary,man,man,CROWS,6,6,False
+gender_binary,woman,woman,CROWS,23,23,False
+gender_identity,gender,transgender,CROWS,2,2,False
+nationality,nationality,A Chinese,CROWS,1,1,False
+nationality,nationality,Africa,CROWS,1,1,False
+nationality,nationality,African,CROWS,1,1,False
+nationality,nationality,American man,CROWS,1,1,False
+nationality,nationality,Americans,CROWS,1,1,False
+nationality,nationality,Amish,CROWS,1,1,False
+nationality,nationality,Arab,CROWS,2,2,False
+nationality,nationality,Asian,CROWS,4,4,False
+nationality,nationality,Asians,CROWS,1,1,False
+nationality,nationality,Carlos Prez,CROWS,1,1,False
+nationality,nationality,China,CROWS,2,1,False
+nationality,nationality,Chinese,CROWS,4,4,False
+nationality,nationality,England,CROWS,1,1,False
+nationality,nationality,Eskimo,CROWS,1,1,False
+nationality,nationality,German,CROWS,1,1,False
+nationality,nationality,Greek,CROWS,1,1,False
+nationality,nationality,Gypsys,CROWS,1,1,False
+nationality,nationality,Immigrants,CROWS,1,1,False
+nationality,nationality,Indian,CROWS,2,2,False
+nationality,nationality,Italian,CROWS,7,6,False
+nationality,nationality,Italians,CROWS,2,2,False
+nationality,nationality,Italy,CROWS,1,1,False
+nationality,nationality,Japanese,CROWS,1,1,False
+nationality,nationality,Jorge and his,CROWS,1,1,False
+nationality,nationality,Korean,CROWS,1,1,False
+nationality,nationality,Latino,CROWS,1,1,False
+nationality,nationality,Mexians,CROWS,1,1,False
+nationality,nationality,Mexican,CROWS,9,9,False
+nationality,nationality,Mexicans,CROWS,4,4,False
+nationality,nationality,Mexico,CROWS,3,3,False
+nationality,nationality,Mexicos the best,CROWS,1,1,False
+nationality,nationality,Middle Eastern,CROWS,2,2,False
+nationality,nationality,Middle Easterners,CROWS,1,1,False
+nationality,nationality,Mississippi,CROWS,1,1,False
+nationality,nationality,Native Americans,CROWS,1,1,False
+nationality,nationality,Roma Gypsy,CROWS,1,1,False
+nationality,nationality,Russian,CROWS,1,1,False
+nationality,nationality,Sergey,CROWS,1,1,False
+nationality,nationality,Southern,CROWS,1,1,False
+nationality,nationality,Syria,CROWS,1,1,False
+nationality,nationality,a Mexican,CROWS,1,1,False
+nationality,nationality,an Italian,CROWS,1,1,False
+nationality,nationality,foreigners,CROWS,1,1,False
+nationality,nationality,gypsy,CROWS,1,1,False
+nationality,nationality,hispanic,CROWS,1,1,False
+nationality,nationality,illegal immigrants,CROWS,2,2,False
+nationality,nationality,illegals,CROWS,1,1,False
+nationality,nationality,immigrant,CROWS,1,1,False
+nationality,nationality,immigrants,CROWS,3,3,False
+physical_appearance,obese,obese,CROWS,6,6,False
+physical_appearance,physical_appearance,hunchback,CROWS,1,1,False
+physical_appearance,physical_appearance,obese,CROWS,12,12,False
+physical_appearance,physical_appearance,of average height,CROWS,1,1,False
+physical_appearance,physical_appearance,plumber,CROWS,1,1,False
+physical_appearance,physical_appearance,small,CROWS,1,1,False
+physical_appearance,physical_appearance,tall,CROWS,1,1,False
+physical_appearance,physical_appearance,trim,CROWS,1,1,False
+physical_appearance,physical_appearance,unattractive,CROWS,3,3,False
+physical_appearance,short,short,CROWS,2,2,False
+race,Asian,Asian,CROWS,5,5,False
+race,Black,Black,CROWS,105,80,True
+race,Hispanic,Hispanic,CROWS,6,6,False
+race,Jewish,Jewish,CROWS,2,2,False
+race,Native American,Native American,CROWS,2,2,False
+race,White,White,CROWS,2,2,False
+race,race,Afro-American,CROWS,3,1,False
+race,race,American Indians,CROWS,1,1,False
+race,race,Asian,CROWS,2,2,False
+race,race,Black,CROWS,4,4,False
+race,race,Chin Pang,CROWS,1,0,False
+race,race,Chinese,CROWS,4,3,False
+race,race,Chong Ling,CROWS,1,1,False
+race,race,Davis,CROWS,1,1,False
+race,race,DeAndre,CROWS,1,1,False
+race,race,DeShawn,CROWS,2,2,False
+race,race,DeShawns,CROWS,1,1,False
+race,race,Diamonds,CROWS,1,0,False
+race,race,Feng Wu,CROWS,1,0,False
+race,race,Hispanic,CROWS,10,10,False
+race,race,Indian,CROWS,1,1,False
+race,race,Indians,CROWS,2,2,False
+race,race,Jaleels,CROWS,1,1,False
+race,race,Jamal,CROWS,8,8,False
+race,race,Jamal Jackson,CROWS,1,1,False
+race,race,James,CROWS,1,1,False
+race,race,Javier and Ramirez,CROWS,1,0,False
+race,race,Jose,CROWS,4,3,False
+race,race,Juan Martinez,CROWS,1,1,False
+race,race,Juans,CROWS,1,1,False
+race,race,Julius,CROWS,1,1,False
+race,race,Laquisha,CROWS,1,1,False
+race,race,LeBron,CROWS,2,2,False
+race,race,LeShawn,CROWS,1,1,False
+race,race,Manuel,CROWS,1,1,False
+race,race,Micheal,CROWS,3,3,False
+race,race,Mike,CROWS,1,1,False
+race,race,Ming,CROWS,1,1,False
+race,race,Minority,CROWS,1,1,False
+race,race,Native,CROWS,1,1,False
+race,race,Native American,CROWS,2,2,False
+race,race,Rajeev,CROWS,1,1,False
+race,race,Richard,CROWS,1,0,False
+race,race,Shaniqua,CROWS,4,4,False
+race,race,Shevon,CROWS,1,1,False
+race,race,Terrance,CROWS,2,2,False
+race,race,Terrell,CROWS,1,1,False
+race,race,Thomas,CROWS,1,1,False
+race,race,Treyvone,CROWS,1,0,False
+race,race,Tyrone,CROWS,3,2,False
+race,race,Tyrone was excited,CROWS,1,1,False
+race,race,Tyrones criminal,CROWS,1,1,False
+race,race,Wang,CROWS,1,1,False
+race,race,Won Lee,CROWS,1,1,False
+race,race,an Afro-American,CROWS,1,0,False
+race,race,colored,CROWS,1,1,False
+race,race,dark-skinned,CROWS,1,1,False
+race,race,young Afro,CROWS,1,1,False
+religion,Atheist,Atheist,CROWS,2,2,False
+religion,Christian,Christian,CROWS,3,3,False
+religion,Hindu,Hindu,CROWS,1,1,False
+religion,Jewish,Jewish,CROWS,19,19,False
+religion,Muslim,Muslim,CROWS,16,16,False
+religion,religion,Amish,CROWS,1,1,False
+religion,religion,Arabic,CROWS,1,1,False
+religion,religion,Buddhist,CROWS,1,1,False
+religion,religion,Christian,CROWS,1,1,False
+religion,religion,Hindu,CROWS,1,1,False
+religion,religion,Jewish,CROWS,7,7,False
+religion,religion,Mohammad,CROWS,1,1,False
+religion,religion,Mohammads,CROWS,1,1,False
+religion,religion,Muslim,CROWS,3,3,False
+religion,religion,Navajo Indians strongly,CROWS,1,1,False
+religion,religion,Quran,CROWS,1,1,False
+religion,religion,Wiccan,CROWS,2,2,False
+religion,religion,head scarfs,CROWS,1,1,False
+religion,religion,mosque,CROWS,1,1,False
+religion,religion,wiccan,CROWS,1,1,False
+sexual_orientation,gay,gay,CROWS,23,23,False
+sexual_orientation,sexual_orientation,Being heterosexual,CROWS,1,1,False
+sexual_orientation,sexual_orientation,gay,CROWS,5,5,False
+sexual_orientation,sexual_orientation,hairdresser,CROWS,1,1,False
+sexual_orientation,sexual_orientation,lesbian,CROWS,2,2,False
+sexual_orientation,sexual_orientation,more,CROWS,1,1,False
+sexual_orientation,sexual_orientation,uncles have,CROWS,1,1,False
+socioeconomic,poor,poor,CROWS,29,29,False
+socioeconomic,socioeconomic,Mexican,CROWS,1,1,False
+socioeconomic,socioeconomic,a trailer park,CROWS,1,1,False
+socioeconomic,socioeconomic,and never,CROWS,1,1,False
+socioeconomic,socioeconomic,broken student,CROWS,1,1,False
+socioeconomic,socioeconomic,business man,CROWS,1,1,False
+socioeconomic,socioeconomic,celebrities,CROWS,1,1,False
+socioeconomic,socioeconomic,clown,CROWS,1,1,False
+socioeconomic,socioeconomic,considerable,CROWS,1,1,False
+socioeconomic,socioeconomic,construction worker,CROWS,1,1,False
+socioeconomic,socioeconomic,contract worker,CROWS,1,1,False
+socioeconomic,socioeconomic,cops,CROWS,1,1,False
+socioeconomic,socioeconomic,couldnt,CROWS,1,1,False
+socioeconomic,socioeconomic,doctor,CROWS,1,1,False
+socioeconomic,socioeconomic,dont have,CROWS,1,1,False
+socioeconomic,socioeconomic,fashion model,CROWS,1,1,False
+socioeconomic,socioeconomic,few,CROWS,1,1,False
+socioeconomic,socioeconomic,fisherman,CROWS,1,1,False
+socioeconomic,socioeconomic,garbage man,CROWS,1,1,False
+socioeconomic,socioeconomic,ghetto,CROWS,1,1,False
+socioeconomic,socioeconomic,grateful,CROWS,1,1,False
+socioeconomic,socioeconomic,hillbillies,CROWS,1,1,False
+socioeconomic,socioeconomic,janitor,CROWS,1,1,False
+socioeconomic,socioeconomic,janitors,CROWS,1,1,False
+socioeconomic,socioeconomic,lawyer,CROWS,2,2,False
+socioeconomic,socioeconomic,low,CROWS,2,2,False
+socioeconomic,socioeconomic,mother,CROWS,1,1,False
+socioeconomic,socioeconomic,motorcycle gang,CROWS,1,1,False
+socioeconomic,socioeconomic,poor,CROWS,12,12,False
+socioeconomic,socioeconomic,private,CROWS,1,1,False
+socioeconomic,socioeconomic,prostitutes,CROWS,1,1,False
+socioeconomic,socioeconomic,ramshackle,CROWS,1,1,False
+socioeconomic,socioeconomic,secretary,CROWS,1,1,False
+socioeconomic,socioeconomic,successful businessman,CROWS,1,1,False
+socioeconomic,socioeconomic,the projects,CROWS,1,1,False
+socioeconomic,socioeconomic,uneducated,CROWS,2,2,False

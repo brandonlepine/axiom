@@ -1,0 +1,159 @@
+axis,block,Group_x,predicate_label_provisional,n_available,n_kept,capped
+age,old,old,Inability to use technology?,26,26,False
+age,old,old,Physical weakness,26,26,False
+age,old,old,cognitive ability/memory,48,48,False
+age,old,old,creative ability,26,26,False
+age,old,old,hearing ability,24,24,False
+age,old,old,ignorance,26,26,False
+age,old,old,memory loss,48,48,False
+age,old,old,out of touch,26,26,False
+age,old,old,resistance to change,26,26,False
+age,old,old,stubbornness,24,24,False
+age,old,old,unattractive,26,26,False
+age,young,young,binge drinking,52,52,False
+age,young,young,irresponsible,24,24,False
+age,young,young,recklessness,48,48,False
+age,young,young,risk-taking,48,48,False
+disability,autistic,autistic,empathy,14,14,False
+disability,autistic,autistic,unfriendly/anti-social,52,52,False
+disability,blind,blind,having a job,22,22,False
+disability,blind,blind,independence,22,22,False
+disability,deaf,deaf,career success,52,52,False
+disability,deaf,deaf,people who are dangerous drivers,26,26,False
+disability,mentally ill,mentally ill,people who are responsible for violence,26,26,False
+disability,mentally ill,mentally ill,violence,26,26,False
+disability,physically disabled,physically disabled,good co-worker,18,18,False
+disability,physically disabled,physically disabled,productivity,44,44,False
+disability,physically disabled,physically disabled,romantic interest,18,18,False
+disability,physically disabled,physically disabled,work ethic,20,20,False
+gender_binary,a man,a man,"ability to do a specific career; the ""feminization"" of specific careers",30,30,False
+gender_binary,a man,a man,abuser,60,60,False
+gender_binary,a man,a man,"emotional closedness, lack of empathy",52,52,False
+gender_binary,a man,a man,violence,36,36,False
+gender_binary,a woman,a woman,STEM skills,48,48,False
+gender_binary,a woman,a woman,abuse_victim,20,20,False
+gender_binary,a woman,a woman,emotional,48,48,False
+gender_binary,a woman,a woman,family responsibility,24,24,False
+gender_binary,a woman,a woman,gendered occupation,70,70,False
+gender_binary,a woman,a woman,math ability,50,50,False
+gender_identity,a transgender man,a transgender man,mental health,50,50,False
+gender_identity,a transgender woman,a transgender woman,mental health,65,65,False
+nationality,East/SE Asian,Burmese,submissiveness,22,12,False
+nationality,East/SE Asian,Chinese,parental pressure,11,11,False
+nationality,East/SE Asian,Chinese,submissiveness,24,10,False
+nationality,East/SE Asian,Indonesian,submissiveness,20,6,False
+nationality,East/SE Asian,Japanese,parental pressure,10,10,False
+nationality,East/SE Asian,Japanese,submissiveness,26,18,False
+nationality,East/SE Asian,Korean,parental pressure,10,10,False
+nationality,East/SE Asian,Korean,submissiveness,22,10,False
+nationality,East/SE Asian,Thai,submissiveness,24,14,False
+nationality,East/SE Asian,Vietnamese,submissiveness,16,10,False
+nationality,MENA,Afghan,terrorism,12,11,False
+nationality,MENA,Afghan,violence towards women,26,14,False
+nationality,MENA,Afghan,violence/terrorism,11,9,False
+nationality,MENA,Iranian,terrorism,10,7,False
+nationality,MENA,Iranian,violence towards women,22,10,False
+nationality,MENA,Iranian,violence/terrorism,12,9,False
+nationality,MENA,Iraqi,terrorism,13,11,False
+nationality,MENA,Iraqi,violence towards women,24,10,False
+nationality,MENA,Iraqi,violence/terrorism,12,11,False
+nationality,MENA,Libyan,terrorism,12,10,False
+nationality,MENA,Libyan,violence towards women,18,6,False
+nationality,MENA,Libyan,violence/terrorism,12,11,False
+nationality,MENA,Moroccan,violence towards women,20,6,False
+nationality,MENA,Palestinian,terrorism,13,12,False
+nationality,MENA,Palestinian,violence towards women,16,6,False
+nationality,MENA,Palestinian,violence/terrorism,12,11,False
+nationality,MENA,Saudi,terrorism,12,9,False
+nationality,MENA,Saudi,violence towards women,26,14,False
+nationality,MENA,Saudi,violence/terrorism,11,10,False
+nationality,MENA,Syrian,terrorism,13,10,False
+nationality,MENA,Syrian,violence towards women,20,6,False
+nationality,MENA,Syrian,violence/terrorism,10,8,False
+nationality,MENA,Yemeni,terrorism,12,10,False
+nationality,MENA,Yemeni,violence towards women,20,8,False
+nationality,MENA,Yemeni,violence/terrorism,13,11,False
+nationality,South Asian,Indian,bad odour,16,16,False
+nationality,South Asian,Indian,parental pressure,8,8,False
+nationality,Sub-Saharan African,Eritrean,lack of access to technology,12,9,False
+nationality,Sub-Saharan African,Eritrean,poverty,39,12,False
+nationality,Sub-Saharan African,Ethiopian,lack of access to technology,13,10,False
+nationality,Sub-Saharan African,Ethiopian,poverty,33,6,False
+nationality,Sub-Saharan African,Guinean,lack of access to technology,13,11,False
+nationality,Sub-Saharan African,Guinean,poverty,33,12,False
+nationality,Sub-Saharan African,Kenyan,lack of access to technology,12,10,False
+nationality,Sub-Saharan African,Kenyan,poverty,30,14,False
+nationality,Sub-Saharan African,Malian,lack of access to technology,13,11,False
+nationality,Sub-Saharan African,Malian,poverty,39,18,False
+nationality,Sub-Saharan African,Mozambican,lack of access to technology,13,12,False
+nationality,Sub-Saharan African,Mozambican,poverty,33,9,False
+nationality,Sub-Saharan African,Namibian,lack of access to technology,12,7,False
+nationality,Sub-Saharan African,Nigerian,committing fraud,26,26,False
+nationality,Sub-Saharan African,Nigerian,lack of access to technology,13,10,False
+nationality,Sub-Saharan African,Nigerian,poverty,33,9,False
+nationality,Western,British,unruly/anti-social behaviour,15,15,False
+nationality,Western,Irish,alcoholism,24,24,False
+nationality,Western,Italian,links to organised crime,10,10,False
+physical_appearance,badly dressed,badly dressed,competence,26,26,False
+physical_appearance,badly dressed,badly dressed,criminality,26,26,False
+physical_appearance,badly dressed,badly dressed,criminality; violence,48,48,False
+physical_appearance,badly dressed,badly dressed,homelessness; low SES,26,26,False
+physical_appearance,badly dressed,badly dressed,leadership abilities; competence,52,52,False
+physical_appearance,badly dressed,badly dressed,partying lifestyle,20,20,False
+physical_appearance,badly dressed,badly dressed,professional appearance and behavior,26,26,False
+physical_appearance,badly dressed,badly dressed,substance abuse,24,24,False
+physical_appearance,obese,obese,diet failure,52,52,False
+physical_appearance,obese,obese,lazy,16,16,False
+physical_appearance,obese,obese,unhealthy,24,24,False
+physical_appearance,obese,obese,unintelligent,18,18,False
+physical_appearance,pregnant,pregnant,ability to work,52,52,False
+physical_appearance,short,short,competence,48,48,False
+physical_appearance,short,short,height,32,32,False
+race,Asian,Asian,driving ability,24,24,False
+race,Asian,Asian,"hypersexuality, prostitution",14,14,False
+race,Asian,Asian,"meekness, docility, submissiveness",16,16,False
+race,Black,Black,college admissions bias,12,12,False
+race,Black,Black,criminality,26,26,False
+race,Black,Black,drug use,28,28,False
+race,Black,Black,intelligence,12,12,False
+race,Hispanic,Hispanic,illegal immigration,9,9,False
+race,Hispanic,Hispanic,"othering, illegal immigration",18,18,False
+race,Middle Eastern,Middle Eastern,lack of women's rights,40,40,False
+race,Native American,Native American,alcoholism,14,14,False
+religion,Atheist,Atheist,morality,26,26,False
+religion,Atheist,Atheist,trustworthiness,12,12,False
+religion,Catholic,Catholic,abuse by priests,16,16,False
+religion,Catholic,Catholic,misogyny,10,10,False
+religion,Hindu,Hindu,animal sacrifice,13,13,False
+religion,Hindu,Hindu,idol worship,24,24,False
+religion,Jewish,Jewish,control banks,13,13,False
+religion,Jewish,Jewish,dual loyalty,12,12,False
+religion,Mormon,Mormon,polygamy,26,26,False
+religion,Muslim,Muslim,misogyny,14,14,False
+religion,Muslim,Muslim,religious extremism,12,12,False
+religion,Muslim,Muslim,violence,15,15,False
+sexual_orientation,bisexual,bisexual,indecisiveness about sexuality,24,24,False
+sexual_orientation,bisexual,bisexual,promiscuity,10,10,False
+sexual_orientation,bisexual,bisexual,"promiscuity, infidelity",33,33,False
+sexual_orientation,gay,gay,child raising,26,26,False
+sexual_orientation,gay,gay,emotional connection,20,20,False
+sexual_orientation,gay,gay,family problems,13,13,False
+sexual_orientation,gay,gay,health,26,26,False
+sexual_orientation,gay,gay,pedophilia,12,12,False
+sexual_orientation,gay,gay,sexual aggression,8,8,False
+sexual_orientation,gay,gay,stereotyped interests of gay men,10,10,False
+sexual_orientation,gay,gay,stereotypical interests according to gender identity,7,7,False
+sexual_orientation,lesbian,lesbian,appearance and clothing choices,9,9,False
+sexual_orientation,lesbian,lesbian,appropriate steps in a romantic relationship,16,16,False
+sexual_orientation,lesbian,lesbian,emotional connection,12,12,False
+sexual_orientation,lesbian,lesbian,family problems,12,12,False
+sexual_orientation,pansexual,pansexual,afraid of commitment,12,12,False
+socioeconomic,poor,poor,academic achievement,77,77,False
+socioeconomic,poor,poor,"academic achievement, drug use",18,18,False
+socioeconomic,poor,poor,bad parenting,21,21,False
+socioeconomic,poor,poor,drug use,66,66,False
+socioeconomic,poor,poor,educational achievement,26,26,False
+socioeconomic,poor,poor,incompetence,35,35,False
+socioeconomic,poor,poor,intelligence,28,28,False
+socioeconomic,poor,poor,language,39,39,False
+socioeconomic,poor,poor,valuing education; bad parents,24,24,False

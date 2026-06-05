@@ -60,8 +60,10 @@ temp/
 # data/raw/      -> upstream sources: IGNORED (large / externally licensed; see manifests).
 # data/processed/-> parsed/scored intermediates: IGNORED, EXCEPT the small, reproducible
 #                   combined candidate pool the cohort builder freezes from.
-data/raw/
-data/processed/
+# NOTE: ignore directory *contents* (/*), not the directory itself, so the carve-outs
+# below can re-include specific files (git won't descend into a fully-excluded dir).
+data/raw/*
+data/processed/*
 !data/processed/combined/
 data/processed/combined/*
 !data/processed/combined/bbq_crows_candidates.csv

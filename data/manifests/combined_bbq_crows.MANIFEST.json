@@ -1,0 +1,86 @@
+{
+  "dataset_id": "combined_bbq_crows",
+  "schema_version": "v1",
+  "produced_at": "2026-06-05T17:44:53.326797+00:00",
+  "description": "Pooled BBQ + CrowS-Pairs biased pairs in Wino-style continuation-scoring format. Pod input for pooled head/MLP/residual analyses, plus per-source BBQ-only and CrowS-only cohorts for cross-source residual comparison.",
+  "sources": [
+    {
+      "name": "BBQ",
+      "role": "template-based stereotype pairs",
+      "url": "https://github.com/nyu-mll/BBQ",
+      "acquired": "see data/raw/bbq"
+    },
+    {
+      "name": "CrowS-Pairs",
+      "role": "naturalistic stereotype pairs",
+      "url": "https://github.com/nyu-mll/crows-pairs",
+      "acquired": "see data/raw/crows-pairs"
+    }
+  ],
+  "transformation": {
+    "candidate_pool": "data/processed/combined/bbq_crows_candidates.csv",
+    "pool_builder": "build_combined_candidates (ported from bias_llm); pools BBQ final candidates + CrowS biased pairs (bias_score>0), fresh unique row_id.",
+    "cohort_builder": "axiom.cohorts.SegmentedCohortBuilder via scripts/build_cohorts.py",
+    "balancing": "cap=80 pairs per (block, predicate_label_provisional) cell, highest bias_score kept",
+    "gender_split": "axis 'gender' split into gender_binary (cis man/woman role bias) and gender_identity (trans/nonbinary identity bias) by identity string. Balance-neutral: the cap keys on block, and binary vs trans blocks are disjoint (ADR 0002). Verified row-identical to the pre-split pod cohorts; only the axis label changes."
+  },
+  "cohorts": {
+    "_all": "data/cohorts/combined_bbq_crows/cohort.csv",
+    "bbq_only": "data/cohorts/residual_bbq_crows/bbq/cohort.csv",
+    "crows_only": "data/cohorts/residual_bbq_crows/crows/cohort.csv"
+  },
+  "schema": "axiom.data.schemas.COMBINED_SCHEMA",
+  "artifacts": {
+    "_all": {
+      "path": "data/cohorts/combined_bbq_crows/cohort.csv",
+      "rows": 4060,
+      "sha256": "f7b7a0a21a223832d3b2e4b0e54ddb1d34d1bc46a288dc377784b79040ae21a7",
+      "axis_counts": {
+        "nationality": 690,
+        "age": 537,
+        "physical_appearance": 519,
+        "gender_binary": 486,
+        "socioeconomic": 412,
+        "race": 390,
+        "disability": 367,
+        "sexual_orientation": 284,
+        "religion": 258,
+        "gender_identity": 117
+      }
+    },
+    "bbq_only": {
+      "path": "data/cohorts/residual_bbq_crows/bbq/cohort.csv",
+      "rows": 3481,
+      "sha256": "5cb1dd284ec906ab9f1efc063e4d9bde25719dfbb8c20cddc22fb257edeb2789",
+      "axis_counts": {
+        "nationality": 610,
+        "age": 498,
+        "physical_appearance": 490,
+        "gender_binary": 438,
+        "disability": 340,
+        "socioeconomic": 334,
+        "sexual_orientation": 250,
+        "race": 213,
+        "religion": 193,
+        "gender_identity": 115
+      }
+    },
+    "crows_only": {
+      "path": "data/cohorts/residual_bbq_crows/crows/cohort.csv",
+      "rows": 579,
+      "sha256": "83dce76863b09c85164b134e51fbaea168d2a9521963a9d194c6c130fe5dc66d",
+      "axis_counts": {
+        "race": 177,
+        "nationality": 80,
+        "socioeconomic": 78,
+        "religion": 65,
+        "gender_binary": 48,
+        "age": 39,
+        "sexual_orientation": 34,
+        "physical_appearance": 29,
+        "disability": 27,
+        "gender_identity": 2
+      }
+    }
+  }
+}

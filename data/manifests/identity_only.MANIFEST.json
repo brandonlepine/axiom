@@ -1,0 +1,39 @@
+{
+  "dataset_id": "identity_only",
+  "schema_version": "v1",
+  "produced_at": "2026-06-05T17:44:53.351689+00:00",
+  "description": "Identity-only prompts (no stereotype continuation): minimal templates naming an identity, used to estimate the identity direction v_identity independent of stereotype expression (planning doc, 'Separate Identity Representation from Stereotype Expression').",
+  "sources": [
+    {
+      "name": "axiom identity templates",
+      "role": "authored templates x identity taxonomy",
+      "url": "data/processed/identity_specific",
+      "acquired": "authored"
+    }
+  ],
+  "transformation": {
+    "builder": "identity template x identity taxonomy expansion (bias_llm)",
+    "note": "Carried over verbatim; tracked with checksum."
+  },
+  "cohorts": {
+    "prompts": "data/cohorts/identity_only/mi_identity_prompts.csv"
+  },
+  "schema": "prompt-level (prompt_id, identity_id, axis, canonical_label, prompt, ...)",
+  "artifacts": {
+    "prompts": {
+      "path": "data/cohorts/identity_only/mi_identity_prompts.csv",
+      "rows": 12567,
+      "sha256": "df4e463264b8238ff2a28938cf2fc6b1cb462faa3a3988ad1fc6104b77f2ba46",
+      "axis_counts": {
+        "nationality": 4059,
+        "socioeconomic_status": 1326,
+        "religion": 1302,
+        "disability_status": 1295,
+        "physical_appearance": 1282,
+        "gender_identity": 1272,
+        "race_ethnicity": 1183,
+        "sexual_orientation": 848
+      }
+    }
+  }
+}

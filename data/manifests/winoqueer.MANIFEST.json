@@ -1,0 +1,36 @@
+{
+  "dataset_id": "winoqueer",
+  "schema_version": "v1",
+  "produced_at": "2026-06-05T17:44:53.335507+00:00",
+  "description": "WinoQueer LGBTQ+ identity + stereotype-continuation pairs in Wino-style scoring format. Pod input for the identity-segmented circuit analyses.",
+  "sources": [
+    {
+      "name": "WinoQueer",
+      "role": "LGBTQ+ bias benchmark",
+      "url": "https://github.com/katyfelkner/winoqueer",
+      "acquired": "see data/raw/winoqueer"
+    }
+  ],
+  "transformation": {
+    "candidate_pool": "data/processed/winoqueer/results/patching_candidates/winoqueer_patching_candidates_all.csv",
+    "cohort_builder": "build_winoqueer_segmented_cohort (bias_llm); cap=100 per (Gender_ID_x, predicate_label_provisional) cell.",
+    "gender_split": "n/a (WinoQueer is already an identity-construct dataset)",
+    "note": "Carried over verbatim from the validated bias_llm build; not yet rebuilt in-repo (requires porting the identity-taxonomy module). Tracked as-is with this checksum; a future commit will reproduce it from the pool."
+  },
+  "cohorts": {
+    "_all": "data/cohorts/winoqueer/cohort.csv"
+  },
+  "schema": "axiom.data.schemas.WINOQUEER_SCHEMA",
+  "artifacts": {
+    "_all": {
+      "path": "data/cohorts/winoqueer/cohort.csv",
+      "rows": 5622,
+      "sha256": "28906f7f69e68195be5a5d0781277e93a166593ee70d2cc13ece9efc73f2cb92",
+      "axis_counts": {
+        "sexual_orientation": 2998,
+        "umbrella": 1747,
+        "gender_identity": 877
+      }
+    }
+  }
+}
