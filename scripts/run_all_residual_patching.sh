@@ -9,6 +9,8 @@
 # Each dataset auto-resolves its latest selected analysis cohort; resume is per-pair.
 set -u
 
+export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
+
 CONFIG="${1:-configs/scoring/winoqueer_llama31_8b.yaml}"
 DATASETS="${2:-crows bbq combined_bbq_crows winoqueer}"
 

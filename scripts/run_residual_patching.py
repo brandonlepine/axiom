@@ -18,8 +18,12 @@ Examples:
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from pathlib import Path
+
+# Reduce CUDA fragmentation over a long patching run (must be set before torch/CUDA init).
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
