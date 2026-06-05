@@ -13,7 +13,7 @@ import pandas as pd
 
 from axiom.data.adapters import CohortFileAdapter
 from axiom.data.schemas import COMBINED_SCHEMA, WINOQUEER_SCHEMA, CohortSchema
-from axiom.paths import REPO_ROOT, DataLayout
+from axiom.paths import REPO_ROOT, DataLayout, latest_run_dir
 
 
 @dataclass(frozen=True)
@@ -104,3 +104,50 @@ def make_adapter(dataset: str, root: Path = REPO_ROOT, cohort_override: Path | N
     schema = DATASETS[dataset].schema if dataset in DATASETS else COMBINED_SCHEMA
     path = cohort_override or cohort_path(dataset, root)
     return CohortFileAdapter(dataset, path, schema)
+
+
+def latest_analysis_cohort(model_name: str, dataset: str, root: Path = REPO_ROOT) -> Path | None:
+    """Path to the most recent SELECTED analysis cohort for (model, dataset), or ``None``.
+
+    Globs the latest ``outputs/<model>/<dataset>/selection/<run_id>/`` for the frozen
+    ``*_analysis_cohort.csv`` written by ``run_select_cohort.py``.
+    """
+    run_dir = latest_run_dir(model_name, dataset, "selection", root)
+    if run_dir is None:
+        return None
+    matches = sorted(run_dir.glob("*_analysis_cohort.csv"))
+    return matches[-1] if matches else None
+
+
+def resolve_analysis_cohort(
+    dataset: str,
+    model_name: str,
+    root: Path = REPO_ROOT,
+    *,
+    cohort_override: Path | None = None,
+    use_raw: bool = False,
+) -> tuple[Path, str]:
+    """Resolve which cohort a mechanistic step should consume, with explicit precedence.
+
+    1. ``cohort_override`` (an explicit ``--cohort`` path) wins.
+    2. ``use_raw=True`` deliberately selects the raw frozen pod cohort (the candidate
+       universe, NOT bias-selected for this model) -- escape hatch only.
+    3. Otherwise the latest model-specific SELECTED analysis cohort
+       (``run_select_cohort.py`` output). This is the methodological default (ADR 0003):
+       mechanistic analyses run on instances where THIS model exhibits the bias.
+
+    Returns ``(path, source_label)``. Raises ``SystemExit`` with guidance if no selected
+    cohort exists and neither override nor ``use_raw`` was given.
+    """
+    if cohort_override is not None:
+        return cohort_override, "override"
+    if use_raw:
+        return cohort_path(dataset, root), "raw_frozen_cohort"
+    latest = latest_analysis_cohort(model_name, dataset, root)
+    if latest is None:
+        raise SystemExit(
+            f"No selected analysis cohort for model={model_name!r} dataset={dataset!r}.\n"
+            f"Run:  python scripts/run_select_cohort.py --config <cfg> --datasets {dataset}\n"
+            f"or pass --cohort <path>, or --raw-cohort to use the (non-selected) frozen cohort."
+        )
+    return latest, "selected_analysis_cohort"

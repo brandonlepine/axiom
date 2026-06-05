@@ -24,7 +24,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from axiom.config import PatchingConfig, load_model_registry, load_run_config
-from axiom.datasets import make_adapter
+from axiom.datasets import make_adapter, resolve_analysis_cohort
 from axiom.interventions import ResidualPatcher
 from axiom.models import ModelLoader
 from axiom.paths import OutputLayout
@@ -39,7 +39,10 @@ def main() -> None:
     ap.add_argument("--models-config", type=Path, default=REPO / "configs" / "models.yaml")
     ap.add_argument("--model", type=str, default=None, help="Registry key override (e.g. gpt2).")
     ap.add_argument("--dataset", type=str, default=None, help="Dataset slug (overrides config.dataset).")
-    ap.add_argument("--cohort", type=Path, default=None, help="Cohort CSV override.")
+    ap.add_argument("--cohort", type=Path, default=None, help="Explicit cohort CSV (overrides auto-resolve).")
+    ap.add_argument("--raw-cohort", action="store_true",
+                    help="Use the raw frozen pod cohort (NOT bias-selected for this model). "
+                         "Default resolves the latest selected analysis cohort (run_select_cohort.py).")
     ap.add_argument("--max-pairs", type=int, default=None, help="Smoke-test cap on pairs.")
     ap.add_argument("--layers", type=str, default=None, help="Comma-separated layer subset (default: all).")
     ap.add_argument("--patch-batch-size", type=int, default=None, help="Target positions per forward batch.")
@@ -67,12 +70,14 @@ def main() -> None:
         updates["resume"] = False
     cfg = cfg.model_copy(update={"patching": pc.model_copy(update=updates)})
 
-    adapter = make_adapter(dataset, REPO, cohort_override=args.cohort)
+    cohort_csv, cohort_source = resolve_analysis_cohort(
+        dataset, cfg.model.name, REPO, cohort_override=args.cohort, use_raw=args.raw_cohort)
+    adapter = make_adapter(dataset, REPO, cohort_override=cohort_csv)
     run_id = cfg.run_id or new_run_id()
     layout = OutputLayout(model=cfg.model.name, dataset=dataset, step="residual_patching", run_id=run_id, root=REPO)
     print(f"[run_residual_patching] dataset={dataset} model={cfg.model.name} run_id={run_id}")
-    print(f"[run_residual_patching] cohort={adapter.cohort_path()} layers={cfg.patching.layers or 'all'} "
-          f"max_pairs={cfg.patching.max_pairs}")
+    print(f"[run_residual_patching] cohort={cohort_csv} ({cohort_source})")
+    print(f"[run_residual_patching] layers={cfg.patching.layers or 'all'} max_pairs={cfg.patching.max_pairs}")
 
     loaded = ModelLoader(cfg.model).load()
     result = ResidualPatcher(cfg, adapter, layout, loaded).run()

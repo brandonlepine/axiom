@@ -6,7 +6,9 @@ matched Wino-style datasets: **WinoQueer**, **BBQ-derived WinoGender / WinoRace*
 
 The goal is not just to produce figures — it is a repository where every figure, table,
 and claim traces back to a dataset, model, configuration, and exact analysis run. See
-[`CLAUDE.md`](CLAUDE.md) for the full engineering agreements.
+[`docs/PIPELINE.md`](docs/PIPELINE.md) for the end-to-end pipeline guide,
+[`docs/adr/`](docs/adr/) for design decisions, and [`CLAUDE.md`](CLAUDE.md) for the full
+engineering agreements.
 
 ## What this measures
 

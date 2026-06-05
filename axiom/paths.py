@@ -97,6 +97,7 @@ class OutputLayout:
 # Canonical step names used in output paths and runner registration.
 STEPS = (
     "scoring",
+    "selection",
     "residual_patching",
     "head_patching",
     "head_ablation",
@@ -106,3 +107,25 @@ STEPS = (
     "segmented",
     "cross_dataset",
 )
+
+
+def outputs_root(root: Path = REPO_ROOT) -> Path:
+    return root / "outputs"
+
+
+def step_dir(model: str, dataset: str, step: str, root: Path = REPO_ROOT) -> Path:
+    """``outputs/<model>/<dataset>/<step>`` (the parent of all runs of that step)."""
+    return outputs_root(root) / slugify(model) / slugify(dataset) / step
+
+
+def latest_run_dir(model: str, dataset: str, step: str, root: Path = REPO_ROOT) -> Path | None:
+    """The most recent run directory for a (model, dataset, step), or ``None``.
+
+    Run ids are timestamp-prefixed (``YYYYMMDDTHHMMSSZ-...``) so the lexicographic max is
+    the most recent run.
+    """
+    base = step_dir(model, dataset, step, root)
+    if not base.is_dir():
+        return None
+    runs = sorted(p for p in base.iterdir() if p.is_dir())
+    return runs[-1] if runs else None
