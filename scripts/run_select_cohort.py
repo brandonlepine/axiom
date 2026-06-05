@@ -70,9 +70,23 @@ def select_dataset(cfg: RunConfig, dataset: str, loaded: LoadedModel, run_id: st
         f"{dataset}_{model_slug}_analysis_cohort.csv": cohort,
         f"{dataset}_{model_slug}_selection_report.csv": report,
     }
+    print(f"  cohort: rows={len(cohort)} cols={cohort.shape[1]} | scored rows={len(scored)}")
     for name, frame in artifacts.items():
         path = layout.artifact(name)
-        atomic_write_bytes(path, frame.to_csv(index=False).encode("utf-8"))
+        data = frame.to_csv(index=False).encode("utf-8")
+        # Verify the bytes landed: the pod's overlay FS silently produced 0-byte cohort
+        # files on a prior run. Retry, then fail loudly rather than write a corrupt cohort.
+        for attempt in range(3):
+            atomic_write_bytes(path, data)
+            if path.stat().st_size == len(data):
+                break
+            print(f"  WARN short write {name}: {path.stat().st_size}/{len(data)} bytes "
+                  f"(rows={len(frame)}, cols={frame.shape[1]}); retry {attempt + 1}/3")
+        else:
+            raise RuntimeError(
+                f"{name}: wrote {path.stat().st_size} bytes but data is {len(data)} "
+                f"(rows={len(frame)}, cols={frame.shape[1]}) after 3 attempts -- filesystem write issue."
+            )
         ArtifactMetadata(
             artifact=name, produced_by="BiasCohortSelector", run_id=run_id,
             dataset=dataset, model=cfg.model.name,
