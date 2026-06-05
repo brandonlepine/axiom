@@ -29,47 +29,24 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import pandas as pd
 
 from axiom.config import RunConfig, ScoringConfig, load_model_registry, load_run_config
+from axiom.datasets import ALL_POD_DATASETS, cohort_path, manifest_path
 from axiom.models import ModelLoader
 from axiom.models.loader import LoadedModel
-from axiom.paths import DataLayout, OutputLayout, slugify
+from axiom.paths import OutputLayout, slugify
 from axiom.provenance import ArtifactMetadata, InputArtifact, atomic_write_bytes, new_run_id
 from axiom.scoring import BiasScorer
 
 REPO = Path(__file__).resolve().parent.parent
-
-# Known dataset slugs -> (cohort path relative to repo, manifest dataset). The two
-# per-source cohorts share the combined manifest. Any other dataset falls back to
-# data/cohorts/<dataset>/cohort.csv.
-DATASET_COHORTS: dict[str, tuple[str, str]] = {
-    "winoqueer": ("data/cohorts/winoqueer/cohort.csv", "winoqueer"),
-    "combined_bbq_crows": ("data/cohorts/combined_bbq_crows/cohort.csv", "combined_bbq_crows"),
-    "bbq": ("data/cohorts/residual_bbq_crows/bbq/cohort.csv", "combined_bbq_crows"),
-    "crows": ("data/cohorts/residual_bbq_crows/crows/cohort.csv", "combined_bbq_crows"),
-}
-ALL_POD_DATASETS = ("winoqueer", "combined_bbq_crows", "bbq", "crows")
-
-
-def _resolve_cohort(dataset: str, override: Path | None) -> Path:
-    if override is not None:
-        return override
-    if dataset in DATASET_COHORTS:
-        return REPO / DATASET_COHORTS[dataset][0]
-    return DataLayout(REPO).cohorts(dataset) / "cohort.csv"
-
-
-def _resolve_manifest(dataset: str) -> Path:
-    manifest_ds = DATASET_COHORTS.get(dataset, (None, dataset))[1]
-    return DataLayout(REPO).manifest(manifest_ds)
 
 
 def score_dataset(
     cfg: RunConfig, dataset: str, loaded: LoadedModel, run_id: str, cohort_override: Path | None
 ) -> None:
     """Score one dataset and write its raw + summary artifacts with provenance."""
-    cohort_path = _resolve_cohort(dataset, cohort_override)
-    if not cohort_path.exists():
-        raise SystemExit(f"cohort not found: {cohort_path}")
-    df = pd.read_csv(cohort_path)
+    cohort_csv = cohort_override or cohort_path(dataset, REPO)
+    if not cohort_csv.exists():
+        raise SystemExit(f"cohort not found: {cohort_csv}")
+    df = pd.read_csv(cohort_csv)
 
     layout = OutputLayout(model=cfg.model.name, dataset=dataset, step="scoring", run_id=run_id, root=REPO)
     layout.ensure()
@@ -80,7 +57,7 @@ def score_dataset(
     summary = scorer.summarize(scored)
 
     model_slug = slugify(cfg.model.name)
-    manifest = _resolve_manifest(dataset)
+    manifest = manifest_path(dataset, REPO)
     config_payload = cfg.model_dump(mode="json")
     config_payload["dataset"] = dataset
     config_payload["scoring_metric"] = BiasScorer.metric
@@ -97,7 +74,7 @@ def score_dataset(
             dataset=dataset,
             model=cfg.model.name,
             dataset_manifest=str(manifest.relative_to(REPO)) if manifest.exists() else None,
-            input_artifacts=[InputArtifact.of(cohort_path)],
+            input_artifacts=[InputArtifact.of(cohort_csv)],
             config=config_payload,
         ).write(path)
         print(f"  wrote {path.name}")

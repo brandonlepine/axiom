@@ -59,6 +59,15 @@ class CohortConfig(_Strict):
     sort_by: list[str] = Field(default_factory=lambda: ["bias_score", "row_id"])
 
 
+class PatchingConfig(_Strict):
+    """Activation-patching step parameters (residual / head patching)."""
+
+    patch_batch_size: int = Field(32, ge=1, description="Target positions patched per forward batch.")
+    max_pairs: int | None = Field(None, ge=1, description="Smoke-test cap on cohort pairs.")
+    layers: list[int] | None = Field(None, description="Restrict to these layers (default: all).")
+    resume: bool = Field(True, description="Resume from an existing raw CSV, redoing the last pair.")
+
+
 class RunConfig(_Strict):
     """Top-level config for a single pipeline step invocation.
 
@@ -73,6 +82,7 @@ class RunConfig(_Strict):
     run_id: str | None = None
     scoring: ScoringConfig | None = None
     cohort: CohortConfig | None = None
+    patching: PatchingConfig | None = None
 
     @field_validator("dataset")
     @classmethod

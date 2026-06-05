@@ -44,5 +44,21 @@ class DatasetAdapter(ABC):
 
     @property
     def identity_columns(self) -> tuple[str, str]:
-        """The (target, reference) identity column names for this dataset's schema."""
+        """The (stereotype, reference) identity column names for this dataset's schema."""
         return self.schema.identity_x_col, self.schema.identity_y_col
+
+
+class CohortFileAdapter(DatasetAdapter):
+    """A concrete adapter for a frozen cohort at a known path + schema.
+
+    Avoids one class per dataset: the runner constructs this from the dataset slug, the
+    cohort CSV path, and the matching :class:`CohortSchema`.
+    """
+
+    def __init__(self, dataset_id: str, cohort_csv: Path, schema: CohortSchema) -> None:
+        super().__init__(dataset_id)
+        self._cohort_csv = Path(cohort_csv)
+        self.schema = schema
+
+    def cohort_path(self) -> Path:
+        return self._cohort_csv
