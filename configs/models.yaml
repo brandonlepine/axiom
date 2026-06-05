@@ -18,10 +18,14 @@ gpt2:
 
 llama31-8b:
   name: meta-llama/Llama-3.1-8B
-  hf_path: models/Llama-3.1-8B   # local checkpoint (gitignored); on the pod, point at the pod path or hub id
+  hf_path: meta-llama/Llama-3.1-8B   # HuggingFace hub id (gated: needs HF auth + license acceptance)
   tl_name: meta-llama/Llama-3.1-8B
   family: llama
   device: auto            # resolves to cuda on the pod, mps locally
   dtype: float16
   prepend_bos: true
   padding_side: right
+
+# To use a locally-downloaded checkpoint instead of the hub, set hf_path to its path,
+# e.g. hf_path: models/Llama-3.1-8B (keep tl_name as the hub id so TransformerLens
+# recognizes the architecture).

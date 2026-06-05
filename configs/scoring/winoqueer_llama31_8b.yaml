@@ -5,7 +5,7 @@ dataset: winoqueer
 seed: 0
 model:
   name: meta-llama/Llama-3.1-8B
-  hf_path: models/Llama-3.1-8B
+  hf_path: meta-llama/Llama-3.1-8B   # HuggingFace hub id (gated: needs HF auth + license acceptance)
   tl_name: meta-llama/Llama-3.1-8B
   family: llama
   device: auto
