@@ -1,0 +1,72 @@
+\section{Proposed Study Architecture}
+
+\subsection{Separate Identity Representation from Stereotype Expression}
+We already have: 
+\begin{itemize}
+    \item Identity-only dataset
+    \item WinoQueer: identity plus stereotype continuation
+    \item BBQ / CrowS - WinoGender and WinoRace
+\end{itemize}
+
+Use these to estimate three things: 
+\begin{enumerate}
+    \item $v_{identity}$ - from identity-only contrasts
+    \item $v_{bias}$ - from biased minimal pairs
+    \item $v_{stereotype} = v_{bias} - v_{identity}$ as a rough residualization stereotype-association direction
+    \item $v_{stereotype}'$ - derive from a stereotype only dataset 
+\end{enumerate}
+
+Then ask: 
+\begin{enumerate}
+    \item Does $v_{identity}$ steer demographic recognition without increasing stereotypes?
+    \item Does $v_{bias}$ steer stereotype continuations
+    \item Does subtracting $v_{identity}$ preserve stereotype steering or destroy it. 
+\end{enumerate}
+
+\subsection{Treat the Datasets as Matched Bias Axes}
+For each dataset, run the same battery: 
+\begin{itemize}
+    \item residual patching
+    \item head patching
+    \item head ablation 
+    \item greedy knockout
+    \item steering 
+    \item MLP attribution
+\end{itemize}
+
+Then compare not just effect size, but mechanistic profiles
+\begin{table}[]
+    \centering
+    \begin{tabular}{l|l}
+    \toprule
+       \textbf{Comparison}  & \textbf{Metric}  \\
+        Layer stability &  Spearman Correlation of layer profiles \\
+        Head Stability  & Jaccard/top-k overlap \\
+        MLP Stability & Neuron Overlap / Layer Correlation \\
+        Circuit Concentration & Greedy Knockout Curve \\
+        Linearity & Steering monotonicity + random vector control \\
+        Transfer & train on one dataset, test on another \\
+    \bottomrule
+    \end{tabular}
+    \caption{Caption}
+    \label{tab:placeholder}
+\end{table}
+
+\subsection{Add Transfer Experiments}
+Train/Discover on One Dataset, then intervene on another 
+\begin{table}[]
+    \centering
+    \begin{tabular}{l | l}
+    \toprule
+        \textbf{Discover Circuit On} & \textbf{Test On}  \\
+        \midrule
+        WinoQueer & BBQ/CrowS Sexual orientation and Gender Identity \\
+        WinoQueer & WinoGender \\
+        WinoGender & WinoQueer \\
+        WinoRace & WinoGender \\
+        WinoGender & WinoRace
+    \end{tabular}
+    \caption{Transfer Experiments}
+    \label{tab:placeholder}
+\end{table}
+For each transfer measure: $\Delta\text{bias fraction}$ from ablating discovered heads/MLPs, and $\Delta\text{bias fraction}$ from steering directions.

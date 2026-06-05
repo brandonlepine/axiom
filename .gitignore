@@ -1,4 +1,6 @@
+# ---------------------------------------------------------------------------
 # Python
+# ---------------------------------------------------------------------------
 __pycache__/
 *.py[cod]
 *$py.class
@@ -6,13 +8,19 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 .ipynb_checkpoints/
+*.egg-info/
+.coverage
 
+# ---------------------------------------------------------------------------
 # Virtual environments
+# ---------------------------------------------------------------------------
 .venv/
 venv/
 env/
 
-# Local configuration and secrets
+# ---------------------------------------------------------------------------
+# Secrets / local config
+# ---------------------------------------------------------------------------
 .env
 .env.*
 !.env.example
@@ -20,102 +28,45 @@ env/
 *.key
 credentials.json
 
-# OS/editor noise
+# ---------------------------------------------------------------------------
+# OS / editor noise
+# ---------------------------------------------------------------------------
 .DS_Store
 .idea/
 .vscode/
 
-# Large local artifacts
+# ---------------------------------------------------------------------------
+# Large local artifacts (never committed; regenerated or downloaded)
+# NOTE: .gitignore does NOT support inline (end-of-line) comments -- keep each
+# pattern on its own line with comments above it, never after the pattern.
+# ---------------------------------------------------------------------------
+# Local model checkpoints (e.g. Llama-3.1-8B) and SAE checkpoints.
 models/
-results/
-# Combined BBQ+CrowS pooled candidates + per-axis cohorts (small; pod inputs) — track these
-!data/combined/
-data/combined/*
-!data/combined/bbq_crows_candidates.csv
-!data/combined/results/
-data/combined/results/*
-!data/combined/results/*/
-data/combined/results/*/*
-!data/combined/results/*/segmented/
-data/combined/results/*/segmented/*
-!data/combined/results/*/segmented/cohort.csv
-!data/combined/results/*/segmented/cohort_coverage.csv
-data/bbq/*
-!data/bbq/data/
-!data/bbq/data/*.jsonl
-!data/bbq/few_shot_pool.json
-!data/bbq/results/
-data/bbq/results/*
-# Track the generated patching-pair CSVs for EVERY category (these are what the pod
-# needs), but nothing else under results/ (scored/candidates/plots stay local).
-!data/bbq/results/*/
-data/bbq/results/*/*
-!data/bbq/results/*/patching_pairs/
-data/bbq/results/*/patching_pairs/*
-!data/bbq/results/*/patching_pairs/*.csv
-# BBQ-derived WinoQueer-style stereotype datasets: track the reviewable curated predicates,
-# the flat stereotype worklist, and the built pairs (the dataset). Plots/scored stay local.
-!data/bbq/stereotypes/
-data/bbq/stereotypes/*
-!data/bbq/stereotypes/bbq_stereotypes_raw.csv
-!data/bbq/stereotypes/bbq_predicates_curated.csv
-!data/bbq/stereotypes/bbq_pairs_all.csv
-!data/bbq/stereotypes/bbq_review_cards.csv
-!data/bbq/stereotypes/bbq_review_cards.jsonl
-!data/bbq/stereotypes/bbq_review_annotations.jsonl
-!data/bbq/stereotypes/bbq_candidates_final.csv
-!data/bbq/stereotypes/bbq_scored_summary.csv
-# BBQ candidates for the new pipeline (mirror the patching_pairs carve-out above)
-!data/bbq/results/*/patching_candidates/
-data/bbq/results/*/patching_candidates/*
-!data/bbq/results/*/patching_candidates/*.csv
-# Frozen per-axis segmented cohorts (pod input for the BBQ patching runs)
-!data/bbq/results/*/segmented/
-data/bbq/results/*/segmented/*
-!data/bbq/results/*/segmented/cohort.csv
-!data/bbq/results/*/segmented/cohort_coverage.csv
-data/bbq/.git/
-# WinoQueer: the `results/` rule above ignores data/winoqueer/results/, but the pod needs
-# the patching-candidate CSVs as input. Track only those (other results stay local).
-!data/winoqueer/results/
-data/winoqueer/results/*
-!data/winoqueer/results/patching_candidates/
-data/winoqueer/results/patching_candidates/*
-!data/winoqueer/results/patching_candidates/*.csv
-# The frozen, balanced segmented cohort is the pod input for the identity-segmented run-scripts.
-# Track the cohort + its coverage report; nothing else.
-!data/winoqueer/results/segmented/
-data/winoqueer/results/segmented/*
-!data/winoqueer/results/segmented/cohort.csv
-!data/winoqueer/results/segmented/cohort_coverage.csv
-status_mi_runpod_results/
-status_mi_runpod_diagnostics_fast/
-status_mi_runpod_diagnostics_fast_figures/
-status_mi_runpod_figures_latest/
+saes/
+# All pipeline outputs (raws, summaries, figures), organized per model/dataset.
+outputs/
 checkpoints/
 wandb/
 runs/
-
-# Logs and temporary files
 *.log
 tmp/
 temp/
 
-# Keep source data and generated prompt CSVs trackable unless explicitly ignored later.
-!data/mi_identity_prompts.csv
+# ---------------------------------------------------------------------------
+# Data tracking policy
+# ---------------------------------------------------------------------------
+# data/cohorts/  -> the frozen pod-input cohorts: TRACKED (small, the inputs the pod reads).
+# data/manifests/-> per-dataset provenance manifests: TRACKED.
+# data/raw/      -> upstream sources: IGNORED (large / externally licensed; see manifests).
+# data/processed/-> parsed/scored intermediates: IGNORED, EXCEPT the small, reproducible
+#                   combined candidate pool the cohort builder freezes from.
+data/raw/
+data/processed/
+!data/processed/combined/
+data/processed/combined/*
+!data/processed/combined/bbq_crows_candidates.csv
 
-# Per-row audit artifact from scripts/audit_identity_spans.py; regeneratable.
-data/find_identity_span_audit.csv
-status_mi_runpod_figures_latest/
-output_data/**
-pod_results/**
-winoqueer/**
-# Upstream WinoQueer source repo (cloned locally, not ours to track)
-/winoqueer/
-CLAUDE.md
-
-# DATASETS
+# Legacy data dirs from the pre-migration layout (kept ignored until removed).
 input_data/
 intermediate_data/
-saes/
-test_data
+test_data/

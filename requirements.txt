@@ -1,15 +1,30 @@
+# Core numerics / data
 pandas
 numpy
+pyarrow
+fastparquet
 tqdm
+
+# Config + validation
+pydantic>=2.5
+PyYAML
+
+# Modeling
 torch
 transformers==4.44.2
 accelerate==0.33.0
 tokenizers==0.19.1
 huggingface_hub
 safetensors
+transformer_lens
+
+# Analysis
 scikit-learn
+
+# Figures (publication / colorblind-safe styling lives in axiom.figures)
 matplotlib
 seaborn
-pyarrow
-fastparquet
-transformer_lens
+cycler
+
+# Testing
+pytest

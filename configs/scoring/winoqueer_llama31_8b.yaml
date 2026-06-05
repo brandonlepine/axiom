@@ -1,0 +1,18 @@
+# Continuation/bias scoring of the WinoQueer cohort on Llama-3.1-8B (pod run).
+# Validates as axiom.config.RunConfig. Run via: scripts/run_scoring.py --config <this>.
+step: scoring
+dataset: winoqueer
+seed: 0
+model:
+  name: meta-llama/Llama-3.1-8B
+  hf_path: models/Llama-3.1-8B
+  tl_name: meta-llama/Llama-3.1-8B
+  family: llama
+  device: auto
+  dtype: float16
+  prepend_bos: true
+  padding_side: right
+scoring:
+  batch_size: 16
+  max_pairs: null          # set to e.g. 5 for a smoke test
+  add_special_tokens: true

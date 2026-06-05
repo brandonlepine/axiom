@@ -1,0 +1,27 @@
+# Model registry. Each entry validates as axiom.config.ModelConfig.
+# `hf_path` is what HuggingFace from_pretrained reads (local dir or hub id);
+# `tl_name` is the TransformerLens architecture name used to wrap it.
+#
+# Local development / smoke tests use gpt2 on MPS or CPU. Pod runs use the local
+# Llama checkpoint under models/ on CUDA. The slug of `name` determines the output
+# subtree (outputs/<model_slug>/...), so gpt2 smoke results never collide with pod runs.
+
+gpt2:
+  name: gpt2
+  hf_path: gpt2
+  tl_name: gpt2
+  family: gpt2
+  device: auto
+  dtype: float32          # gpt2 is tiny; float32 is safe + deterministic on MPS/CPU
+  prepend_bos: true
+  padding_side: right
+
+llama31-8b:
+  name: meta-llama/Llama-3.1-8B
+  hf_path: models/Llama-3.1-8B   # local checkpoint (gitignored); on the pod, point at the pod path or hub id
+  tl_name: meta-llama/Llama-3.1-8B
+  family: llama
+  device: auto            # resolves to cuda on the pod, mps locally
+  dtype: float16
+  prepend_bos: true
+  padding_side: right
