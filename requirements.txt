@@ -10,24 +10,26 @@ pydantic>=2.5
 PyYAML
 
 # Modeling
-# Versions below are the locally-validated combination (GPT-2 smoke test, MPS). Re-pin
-# exact versions from the pod environment once the first CUDA run is confirmed.
+# Known-good trio (validated in the predecessor repo's working venv, and required to be
+# mutually compatible): transformers 5.x <-> transformer_lens 3.3 (both use the new
+# `dtype=` from_pretrained kwarg) <-> torch >= 2.7 (provides torch.float8_e8m0fnu that
+# transformers 5.x imports). Do NOT mix transformers 4.x with transformer_lens 3.3.
 #
-# POD WARNING: do NOT blanket `pip install -r requirements.txt` on a GPU pod -- the
-# default-PyPI `torch` wheel can clobber the pod's driver-matched build and break CUDA
-# (symptoms: "NVIDIA driver too old" -> silent CPU fallback; "torchvision::nms does not
-# exist" masquerading as a BERT import error). On the pod, install a torch wheel matching
-# the driver's CUDA (see `nvidia-smi`), e.g.:
-#   pip install torch --index-url https://download.pytorch.org/whl/cu124
-# then install the rest below. We do NOT use torchvision; if it is present-but-broken,
-# `pip uninstall -y torchvision`. See docs/PIPELINE.md "Troubleshooting".
-torch>=2.1
-transformers>=4.44
+# POD/torch: install torch SEPARATELY from a CUDA wheel matching the driver -- do NOT let
+# a blanket `pip install` pull the default-PyPI torch (it can need a newer driver than the
+# pod has -> "NVIDIA driver too old" -> silent CPU fallback, or an ABI-mismatched
+# torchvision -> "torchvision::nms does not exist" masquerading as a BERT import error).
+# Pick the cuXXX <= the driver's CUDA (see `nvidia-smi`), e.g. for a 12.8 driver:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu126
+# We do NOT use torchvision; if it is present-but-broken: `pip uninstall -y torchvision`.
+# See docs/PIPELINE.md "Troubleshooting".
+torch>=2.7
+transformers==5.9.0
+tokenizers==0.22.2
 accelerate>=0.33
-tokenizers>=0.19
 huggingface_hub
 safetensors
-transformer_lens>=3.3
+transformer_lens==3.3.0
 
 # Analysis
 scikit-learn

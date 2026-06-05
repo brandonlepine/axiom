@@ -145,6 +145,18 @@ python scripts/run_residual_patching.py --config ... --model gpt2 --dataset wino
 
 ## Troubleshooting (pod / environment)
 
+**Known-good versions** (mutually required): `transformers 5.x` ↔ `transformer_lens 3.3`
+(both use the new `dtype=` from_pretrained kwarg) ↔ `torch >= 2.7` (provides
+`torch.float8_e8m0fnu`, which transformers 5.x imports). Never mix transformers 4.x with
+TL 3.3. Pin: `transformers==5.9.0`, `tokenizers==0.22.2`, `transformer_lens==3.3.0`, and a
+`torch>=2.7` cuXXX wheel matching the driver. Pod recovery in one shot (12.8 driver):
+
+```bash
+pip install 'transformers==5.9.0' 'tokenizers==0.22.2' 'transformer_lens==3.3.0'
+pip install --force-reinstall torch --index-url https://download.pytorch.org/whl/cu126
+python -c "import torch; print(torch.__version__, torch.cuda.is_available(), hasattr(torch,'float8_e8m0fnu'))"
+```
+
 These are environment issues, not pipeline bugs. The pod's `torch` is provisioned to match
 its NVIDIA driver; a blanket `pip install` that upgrades `torch`/`torchvision` is the usual
 cause of both:
