@@ -75,4 +75,9 @@ python scripts/run_scoring.py --config configs/scoring/winoqueer_llama31_8b.yaml
 ```
 
 Every runner supports a small smoke-test mode and writes valid artifacts with sidecars.
+
+> **MPS correctness caveat.** TransformerLens warns that the MPS backend may produce
+> silently incorrect numbers on PyTorch 2.11. Local GPT-2 runs are for validating the
+> *plumbing* (alignment, IO, provenance); the **CUDA pod runs are authoritative** for any
+> reported result. Set `TRANSFORMERLENS_ALLOW_MPS=1` to acknowledge/suppress the warning.
 ```

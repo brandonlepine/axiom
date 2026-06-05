@@ -10,13 +10,15 @@ pydantic>=2.5
 PyYAML
 
 # Modeling
-torch
-transformers==4.44.2
-accelerate==0.33.0
-tokenizers==0.19.1
+# Versions below are the locally-validated combination (GPT-2 smoke test, MPS). Re-pin
+# exact versions from the pod environment once the first CUDA run is confirmed.
+torch>=2.1
+transformers>=4.44
+accelerate>=0.33
+tokenizers>=0.19
 huggingface_hub
 safetensors
-transformer_lens
+transformer_lens>=3.3
 
 # Analysis
 scikit-learn
