@@ -116,22 +116,25 @@ class ResidualPatcher(InterventionRunner):
         skipped: list[tuple[int, str]] = []
         progress = tqdm(total=len(pairs) - len(done_ids), desc=f"patch {self.config.dataset}", unit="pair")
         try:
-            for _, row in pairs.iterrows():
-                pair_id = int(row["cohort_pair_id"])
-                if pair_id in done_ids:
-                    continue
-                rows = self._patch_one_pair(
-                    model, tokenizer, device, layers, tl_utils, torch, row, id_x_col, id_y_col
-                )
-                progress.update(1)
-                if isinstance(rows, str):
-                    skipped.append((pair_id, rows))
-                    progress.set_postfix(skipped=len(skipped))
-                    continue
-                writer.writerows(rows)
-                fh.flush()
-                if device == "cuda":
-                    torch.cuda.empty_cache()
+            # no_grad is essential: without it every patched forward retains an autograd
+            # graph that is never freed (we never call backward), exhausting GPU memory.
+            with torch.no_grad():
+                for _, row in pairs.iterrows():
+                    pair_id = int(row["cohort_pair_id"])
+                    if pair_id in done_ids:
+                        continue
+                    rows = self._patch_one_pair(
+                        model, tokenizer, device, layers, tl_utils, torch, row, id_x_col, id_y_col
+                    )
+                    progress.update(1)
+                    if isinstance(rows, str):
+                        skipped.append((pair_id, rows))
+                        progress.set_postfix(skipped=len(skipped))
+                        continue
+                    writer.writerows(rows)
+                    fh.flush()
+                    if device == "cuda":
+                        torch.cuda.empty_cache()
         finally:
             progress.close()
             fh.close()
