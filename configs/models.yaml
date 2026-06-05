@@ -21,7 +21,7 @@ llama31-8b:
   hf_path: meta-llama/Llama-3.1-8B   # HuggingFace hub id (gated: needs HF auth + license acceptance)
   tl_name: meta-llama/Llama-3.1-8B
   family: llama
-  device: auto            # resolves to cuda on the pod, mps locally
+  device: cuda            # demand GPU: an 8B model on CPU is unusable, so fail loudly if CUDA is unavailable
   dtype: float16
   prepend_bos: true
   padding_side: right

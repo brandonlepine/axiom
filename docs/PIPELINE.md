@@ -143,6 +143,26 @@ python scripts/run_residual_patching.py --config ... --model gpt2 --dataset wino
 > PyTorch 2.11. Local GPT-2 runs validate *plumbing*; the **CUDA pod runs are
 > authoritative**. Set `TRANSFORMERLENS_ALLOW_MPS=1` to acknowledge the warning.
 
+## Troubleshooting (pod / environment)
+
+These are environment issues, not pipeline bugs. The pod's `torch` is provisioned to match
+its NVIDIA driver; a blanket `pip install` that upgrades `torch`/`torchvision` is the usual
+cause of both:
+
+- **`ModuleNotFoundError: Could not import module 'BertForPreTraining'`** (during
+  `import transformer_lens`). Misleading: TransformerLens imports `transformers`' whole
+  model registry at import time, and one class fails. The real cause is usually
+  **`RuntimeError: operator torchvision::nms does not exist`** (torch/torchvision ABI
+  mismatch) lower in the traceback. We do not use torchvision -> `pip uninstall -y torchvision`.
+- **`CUDA initialization: The NVIDIA driver on your system is too old` -> `device=cpu`.**
+  `torch` was built for a newer CUDA than the driver supports, so it falls back to CPU
+  (an 8B model on CPU is unusable). Check `nvidia-smi` for the driver's CUDA version and
+  install a matching torch wheel, e.g. `pip install torch --index-url https://download.pytorch.org/whl/cu124`.
+  The Llama configs set `device: cuda` so this now fails loudly ("device='cuda' requested
+  but CUDA is not available") instead of silently using CPU.
+- **First Llama load downloads ~16 GB** from HF (gated: `huggingface-cli login` + accept
+  the license), cached afterward.
+
 ## Provenance
 
 Every artifact has a `<artifact>.meta.json` sidecar: `produced_by`, `run_id`, `git_sha`,

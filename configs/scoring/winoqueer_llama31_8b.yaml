@@ -8,7 +8,7 @@ model:
   hf_path: meta-llama/Llama-3.1-8B   # HuggingFace hub id (gated: needs HF auth + license acceptance)
   tl_name: meta-llama/Llama-3.1-8B
   family: llama
-  device: auto
+  device: cuda            # demand GPU on the pod: fail loudly rather than fall back to CPU
   dtype: float16
   prepend_bos: true
   padding_side: right
