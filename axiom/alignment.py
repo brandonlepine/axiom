@@ -1,14 +1,44 @@
-"""Token alignment and continuation-span detection (pure, no model required).
+"""Token alignment and span detection (pure, no model required).
 
-Wino-style scoring compares two minimally different sentences that share a trailing
-stereotype *continuation* and differ only in the named identity. To score the
-continuation we must find, in token space, where the continuation begins -- robust to
-BPE boundary merges between the prefix and the continuation. These helpers operate on
-already-tokenized id lists so they are deterministic and unit-testable without a model.
+Wino-style scoring compares two minimally different sentences that differ only in the
+named identity. Two alignment views are needed and both live here so they are
+deterministic and unit-testable without a model:
+
+  * :func:`shared_token_spans` -- the canonical WinoQueer view: the aligned token
+    positions the two sentences *share* (everything except the swapped identity), found
+    with difflib. The bias scorer sums log-probs over these shared tokens.
+  * :func:`continuation_start` / :func:`continuation_span` -- the prefix+continuation
+    view used by the patching steps, which read a single readout/continuation span.
 """
 from __future__ import annotations
 
+import difflib
 from typing import Sequence
+
+
+def shared_token_spans(ids_a: Sequence[int], ids_b: Sequence[int]) -> tuple[list[int], list[int]]:
+    """Aligned positions of the tokens two sequences *share*, via difflib (WinoQueer `get_span`).
+
+    Returns ``(positions_a, positions_b)`` -- equal-length lists where ``positions_a[k]``
+    in ``ids_a`` and ``positions_b[k]`` in ``ids_b`` are the same token. Only ``equal``
+    opcodes contribute, so the swapped identity tokens (the only difference between a
+    minimal pair) are excluded; everything else (context + stereotype) is shared.
+
+    This is the exact alignment the published WinoQueer autoregressive metric uses to
+    decide which tokens to score. Operating on ids (cast to str for the matcher) makes it
+    deterministic and model-free.
+    """
+    sa = [str(x) for x in ids_a]
+    sb = [str(x) for x in ids_b]
+    matcher = difflib.SequenceMatcher(None, sa, sb, autojunk=False)
+    pos_a: list[int] = []
+    pos_b: list[int] = []
+    for op, a0, a1, b0, b1 in matcher.get_opcodes():
+        if op == "equal":
+            pos_a.extend(range(a0, a1))
+            pos_b.extend(range(b0, b1))
+    assert len(pos_a) == len(pos_b), "shared spans must align one-to-one"
+    return pos_a, pos_b
 
 
 def common_prefix_len(a: Sequence[int], b: Sequence[int]) -> int:

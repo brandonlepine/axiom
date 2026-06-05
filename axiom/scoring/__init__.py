@@ -1,4 +1,4 @@
-"""Continuation/bias scoring: the Wino-style probe that produces bias_score."""
-from axiom.scoring.scorer import BiasScorer, ContinuationScore
+"""Continuation/bias scoring: the canonical WinoQueer autoregressive bias metric."""
+from axiom.scoring.scorer import BiasScorer, PairScore
 
-__all__ = ["BiasScorer", "ContinuationScore"]
+__all__ = ["BiasScorer", "PairScore"]

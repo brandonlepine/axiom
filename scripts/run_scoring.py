@@ -32,19 +32,28 @@ from axiom.scoring import BiasScorer
 
 REPO = Path(__file__).resolve().parent.parent
 
+# Known dataset slugs -> (cohort path relative to repo, manifest dataset). The two
+# per-source cohorts share the combined manifest. Any other dataset falls back to
+# data/cohorts/<dataset>/cohort.csv.
+DATASET_COHORTS: dict[str, tuple[str, str]] = {
+    "winoqueer": ("data/cohorts/winoqueer/cohort.csv", "winoqueer"),
+    "combined_bbq_crows": ("data/cohorts/combined_bbq_crows/cohort.csv", "combined_bbq_crows"),
+    "bbq": ("data/cohorts/residual_bbq_crows/bbq/cohort.csv", "combined_bbq_crows"),
+    "crows": ("data/cohorts/residual_bbq_crows/crows/cohort.csv", "combined_bbq_crows"),
+}
 
-def _summary(scored: pd.DataFrame) -> pd.DataFrame:
-    """Aggregate bias_score: n, scoreable, mean/median, positive fraction."""
-    valid = scored.dropna(subset=["bias_score"])
-    bs = valid["bias_score"]
-    return pd.DataFrame([{
-        "n_rows": int(len(scored)),
-        "n_scoreable": int(scored["scoreable"].sum()),
-        "n_valid": int(len(bs)),
-        "mean_bias_score": float(bs.mean()) if len(bs) else float("nan"),
-        "median_bias_score": float(bs.median()) if len(bs) else float("nan"),
-        "positive_bias_fraction": float((bs > 0).mean()) if len(bs) else float("nan"),
-    }])
+
+def _resolve_cohort(dataset: str, override: Path | None) -> Path:
+    if override is not None:
+        return override
+    if dataset in DATASET_COHORTS:
+        return REPO / DATASET_COHORTS[dataset][0]
+    return DataLayout(REPO).cohorts(dataset) / "cohort.csv"
+
+
+def _resolve_manifest(dataset: str) -> Path:
+    manifest_ds = DATASET_COHORTS.get(dataset, (None, dataset))[1]
+    return DataLayout(REPO).manifest(manifest_ds)
 
 
 def main() -> None:
@@ -69,7 +78,7 @@ def main() -> None:
         scoring = scoring.model_copy(update={"max_pairs": args.max_pairs})
     cfg = cfg.model_copy(update={"scoring": scoring})
 
-    cohort_path = args.cohort or (DataLayout(REPO).cohorts(cfg.dataset) / "cohort.csv")
+    cohort_path = _resolve_cohort(cfg.dataset, args.cohort)
     if not cohort_path.exists():
         raise SystemExit(f"cohort not found: {cohort_path}")
     df = pd.read_csv(cohort_path)
@@ -83,11 +92,12 @@ def main() -> None:
     loaded = ModelLoader(cfg.model).load()
     scorer = BiasScorer(loaded, cfg.scoring)
     scored = scorer.score(df)
-    summary = _summary(scored)
+    summary = scorer.summarize(scored)
 
     model_slug = slugify(cfg.model.name)
-    manifest = DataLayout(REPO).manifest(cfg.dataset)
+    manifest = _resolve_manifest(cfg.dataset)
     config_payload = cfg.model_dump(mode="json")
+    config_payload["scoring_metric"] = BiasScorer.metric
     config_payload["model_runtime"] = loaded.provenance()
 
     for frame, kind in [(scored, "raw"), (summary, "summary")]:
@@ -106,8 +116,11 @@ def main() -> None:
         ).write(path)
         print(f"  wrote {path.name}")
 
-    print("\n[summary]")
-    print(summary.to_string(index=False))
+    overall = summary[summary["group"] == "ALL"].iloc[0]
+    print(f"\n[summary] WinoQueer score (ALL): {overall['winoqueer_score']}% "
+          f"| n={int(overall['n'])} | neutral={overall['pct_neutral']}% "
+          f"| mean score_diff={overall['mean_score_diff']:.3f}")
+    print(summary.head(12).to_string(index=False))
 
 
 if __name__ == "__main__":

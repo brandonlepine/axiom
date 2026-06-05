@@ -1,5 +1,27 @@
 """Token-alignment / continuation-span invariants (CLAUDE.md: test token alignment)."""
-from axiom.alignment import common_prefix_len, continuation_span, continuation_start
+from axiom.alignment import (
+    common_prefix_len,
+    continuation_span,
+    continuation_start,
+    shared_token_spans,
+)
+
+
+def test_shared_token_spans_excludes_swapped_identity():
+    # BOS=0; shared context [10,11]; identity differs (a:[20,21] vs b:[22]); shared tail [30]
+    a = [0, 10, 11, 20, 21, 30]
+    b = [0, 10, 11, 22, 30]
+    pa, pb = shared_token_spans(a, b)
+    assert pa == [0, 1, 2, 5]   # positions in a of BOS,10,11,30
+    assert pb == [0, 1, 2, 4]   # positions in b of BOS,10,11,30
+    # aligned one-to-one, same token at each aligned position
+    assert [a[i] for i in pa] == [b[j] for j in pb]
+
+
+def test_shared_token_spans_identical_sequences():
+    a = [0, 5, 6, 7]
+    pa, pb = shared_token_spans(a, a)
+    assert pa == pb == [0, 1, 2, 3]
 
 
 def test_common_prefix_len():

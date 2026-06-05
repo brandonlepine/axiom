@@ -1,61 +1,73 @@
-"""BiasScorer orchestration invariants without a model.
+"""WinoQueer autoregressive BiasScorer invariants without a model.
 
-The batched model call (_score_side) is stubbed so we test the parts that carry the
-scientific meaning: bias_score directionality, scoreable handling, and max_pairs --
-exactly the invariants CLAUDE.md calls out ("directionality of bias scoring").
+The batched model side (_summed_logprobs) and tokenization (_encode_with_bos) are
+stubbed so we test the scientific wiring: per-pair stereo direction, score_diff,
+scoreable handling, max_pairs, and the win-rate summary -- the metric-definition
+invariants CLAUDE.md calls out.
 """
 import math
 
 import pandas as pd
 
 from axiom.config import ScoringConfig
-from axiom.scoring import BiasScorer, ContinuationScore
+from axiom.scoring import BiasScorer, PairScore
 
 
 def _df():
     return pd.DataFrame({
-        "cohort_pair_id": [0, 1, 2],
-        "row_id": [10, 11, 12],
-        "sent_x": ["A is gay and sick", "B is straight and ok", "C empty"],
-        "sent_y": ["A is straight and sick", "B is gay and ok", "C empty"],
-        "prefix_x": ["A is gay and", "B is straight and", ""],   # row 2 unscoreable (empty prefix)
-        "prefix_y": ["A is straight and", "B is gay and", ""],
-        "continuation": ["sick", "ok", "x"],
+        "sent_x": ["A is gay", "B is straight", ""],   # row 2 unscoreable (empty text)
+        "sent_y": ["A is straight", "B is gay", ""],
+        "identity": ["Gay", "Gay", "Other"],
     })
 
 
-def _make_scorer(side_map, max_pairs=None):
-    """A BiasScorer whose _score_side returns avg_logp from a {sentence: avg} map."""
+def _stub_scorer(x_scores, y_scores, max_pairs=None):
     scorer = BiasScorer.__new__(BiasScorer)
     scorer.loaded = None
     scorer.config = ScoringConfig(max_pairs=max_pairs)
-
-    def fake_side(fulls, prefixes):
-        return [ContinuationScore(logp=side_map[s], avg_logp=side_map[s], token_count=1) for s in fulls]
-
-    scorer._score_side = fake_side  # type: ignore[method-assign]
+    scorer.uncased = False
+    scorer._encode_with_bos = lambda s: [0, 1, 2, 3]  # type: ignore[method-assign]
+    queue = iter([x_scores, y_scores])  # score() calls X-side then Y-side
+    scorer._summed_logprobs = lambda ids, pos: next(queue)  # type: ignore[method-assign]
     return scorer
 
 
-def test_bias_score_directionality_and_scoreable():
-    # target (sent_x) more probable on row 0 -> positive; less on row 1 -> negative
-    side = {
-        "A is gay and sick": -1.0, "A is straight and sick": -3.0,   # bias +2
-        "B is straight and ok": -3.0, "B is gay and ok": -1.0,       # bias -2
-        "C empty": -2.0,
-    }
-    out = _make_scorer(side).score(_df())
-    assert out.loc[0, "bias_score"] == 2.0
-    assert out.loc[1, "bias_score"] == -2.0
-    # row 2 has empty prefixes -> not scoreable -> NaN bias_score, flagged
+def test_pairscore_properties():
+    p = PairScore(sent_x_score=-1.0, sent_y_score=-3.0, n_shared_x=2, n_shared_y=2)
+    assert p.score_diff == 2.0 and p.stereo == 1 and p.neutral == 0
+    tie = PairScore(-2.0, -2.0, 1, 1)
+    assert tie.stereo == 0 and tie.neutral == 1
+
+
+def test_score_directionality_and_scoreable():
+    # row0: x(-1) > y(-3) -> stereo; row1: x(-5) < y(-2) -> not; row2 unscoreable
+    x = [(-1.0, 2), (-5.0, 2), (float("nan"), 0)]
+    y = [(-3.0, 2), (-2.0, 2), (float("nan"), 0)]
+    out = _stub_scorer(x, y).score(_df())
+    assert out.loc[0, "wq_stereo"] == 1
+    assert out.loc[0, "wq_score_diff"] == 2.0
+    assert out.loc[1, "wq_stereo"] == 0
+    assert out.loc[1, "wq_score_diff"] == -3.0
     assert out.loc[2, "scoreable"] == False  # noqa: E712
-    assert math.isnan(out.loc[2, "bias_score"])
-    # original + new columns present
-    for c in ["target_cont_avg_logp", "reference_cont_avg_logp", "bias_score", "row_id"]:
-        assert c in out.columns
+    assert out.loc[2, "wq_stereo"] == -1
+    assert math.isnan(out.loc[2, "sent_x_score"])
+
+
+def test_summarize_win_rate():
+    x = [(-1.0, 2), (-5.0, 2), (float("nan"), 0)]
+    y = [(-3.0, 2), (-2.0, 2), (float("nan"), 0)]
+    out = _stub_scorer(x, y).score(_df())
+    summary = BiasScorer.summarize(out)
+    allrow = summary[summary["group"] == "ALL"].iloc[0]
+    # 2 scoreable pairs, 1 stereotypical -> 50%
+    assert allrow["n"] == 2 and allrow["n_stereo"] == 1
+    assert allrow["winoqueer_score"] == 50.0
+    # per-identity group present
+    assert "identity" in set(summary["group"])
 
 
 def test_max_pairs_truncates():
-    side = {s: -1.0 for s in pd.concat([_df()["sent_x"], _df()["sent_y"]])}
-    out = _make_scorer(side, max_pairs=2).score(_df())
+    x = [(-1.0, 2), (-5.0, 2)]
+    y = [(-3.0, 2), (-2.0, 2)]
+    out = _stub_scorer(x, y, max_pairs=2).score(_df())
     assert len(out) == 2
