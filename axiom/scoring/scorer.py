@@ -81,9 +81,10 @@ class BiasScorer:
     produced_by = "BiasScorer"
     metric = "winoqueer_autoregressive"
 
-    def __init__(self, loaded: "LoadedModel", config: ScoringConfig) -> None:
+    def __init__(self, loaded: "LoadedModel", config: ScoringConfig, show_progress: bool = True) -> None:
         self.loaded = loaded
         self.config = config
+        self.show_progress = show_progress
         tok = loaded.tokenizer if loaded is not None else None
         self.uncased = bool(getattr(tok, "do_lower_case", False)) if tok is not None else False
 
@@ -106,7 +107,7 @@ class BiasScorer:
 
     # -- scoring ------------------------------------------------------------------
     def _summed_logprobs(
-        self, id_lists: list[list[int]], pos_lists: list[list[int]]
+        self, id_lists: list[list[int]], pos_lists: list[list[int]], desc: str | None = None
     ) -> list[tuple[float, int]]:
         """Sum ``log P(tok_p | tok_<p)`` over positions ``p`` for each sentence (batched).
 
@@ -115,6 +116,7 @@ class BiasScorer:
         n_scored)`` per sentence; empty -> ``(nan, 0)``.
         """
         import torch
+        from tqdm.auto import tqdm
 
         model = self.loaded.model
         device = self.loaded.device
@@ -123,7 +125,9 @@ class BiasScorer:
         bs = self.config.batch_size
         out: list[tuple[float, int]] = []
 
-        for start in range(0, len(id_lists), bs):
+        starts = range(0, len(id_lists), bs)
+        for start in tqdm(starts, desc=desc, unit="batch", leave=False,
+                          disable=not getattr(self, "show_progress", True)):
             chunk = id_lists[start : start + bs]
             pchunk = pos_lists[start : start + bs]
             maxlen = max(len(x) for x in chunk)
@@ -181,8 +185,8 @@ class BiasScorer:
             ids_x.append(ix); ids_y.append(iy)
             pos_x.append(tx[1:]); pos_y.append(ty[1:])  # drop the shared BOS at index 0
 
-        sx_scores = self._summed_logprobs(ids_x, pos_x)
-        sy_scores = self._summed_logprobs(ids_y, pos_y)
+        sx_scores = self._summed_logprobs(ids_x, pos_x, desc="score sent_x")
+        sy_scores = self._summed_logprobs(ids_y, pos_y, desc="score sent_y")
 
         pairs = [
             PairScore(sx[0], sy[0], sx[1], sy[1]) if ok else PairScore(float("nan"), float("nan"), 0, 0)

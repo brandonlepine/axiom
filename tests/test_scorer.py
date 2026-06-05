@@ -28,7 +28,7 @@ def _stub_scorer(x_scores, y_scores, max_pairs=None):
     scorer.uncased = False
     scorer._encode_with_bos = lambda s: [0, 1, 2, 3]  # type: ignore[method-assign]
     queue = iter([x_scores, y_scores])  # score() calls X-side then Y-side
-    scorer._summed_logprobs = lambda ids, pos: next(queue)  # type: ignore[method-assign]
+    scorer._summed_logprobs = lambda ids, pos, desc=None: next(queue)  # type: ignore[method-assign]
     return scorer
 
 

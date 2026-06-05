@@ -84,6 +84,7 @@ class ResidualPatcher(InterventionRunner):
     # -- run ----------------------------------------------------------------------
     def run(self) -> StepResult:
         import torch
+        from tqdm.auto import tqdm
         from transformer_lens import utils as tl_utils
 
         self.check_inputs()
@@ -113,6 +114,7 @@ class ResidualPatcher(InterventionRunner):
             writer.writeheader()
 
         skipped: list[tuple[int, str]] = []
+        progress = tqdm(total=len(pairs) - len(done_ids), desc=f"patch {self.config.dataset}", unit="pair")
         try:
             for _, row in pairs.iterrows():
                 pair_id = int(row["cohort_pair_id"])
@@ -121,14 +123,17 @@ class ResidualPatcher(InterventionRunner):
                 rows = self._patch_one_pair(
                     model, tokenizer, device, layers, tl_utils, torch, row, id_x_col, id_y_col
                 )
+                progress.update(1)
                 if isinstance(rows, str):
                     skipped.append((pair_id, rows))
+                    progress.set_postfix(skipped=len(skipped))
                     continue
                 writer.writerows(rows)
                 fh.flush()
                 if device == "cuda":
                     torch.cuda.empty_cache()
         finally:
+            progress.close()
             fh.close()
 
         return self._finalize(raw_path, raw_name, len(pairs), skipped)
