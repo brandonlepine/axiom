@@ -66,9 +66,19 @@ temp/
 # below can re-include specific files (git won't descend into a fully-excluded dir).
 data/raw/*
 data/processed/*
+# Combined BBQ+CrowS candidate pool (selection-step input; small, tracked).
 !data/processed/combined/
 data/processed/combined/*
 !data/processed/combined/bbq_crows_candidates.csv
+# WinoQueer candidate pool (selection-step input; tracked). Re-include each parent dir
+# down to the file -- git won't descend into a fully-excluded directory.
+!data/processed/winoqueer/
+data/processed/winoqueer/*
+!data/processed/winoqueer/results/
+data/processed/winoqueer/results/*
+!data/processed/winoqueer/results/patching_candidates/
+data/processed/winoqueer/results/patching_candidates/*
+!data/processed/winoqueer/results/patching_candidates/winoqueer_patching_candidates_all.csv
 
 # Legacy data dirs from the pre-migration layout (kept ignored until removed).
 /input_data/
